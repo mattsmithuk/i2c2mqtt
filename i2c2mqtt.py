@@ -74,6 +74,10 @@ parser.add_argument('-d', '--device', dest='devices', action="append",
                    help='Specify the devices to probe in the I2C bus. Can be called many times.')
 parser.add_argument('-m', '--mqtt-host', dest='host', action="store", default="127.0.0.1",
                    help='Specify the MQTT host to connect to.')
+parser.add_argument('-u', '--mqtt-user', dest='user', action="store",
+                   help='Specify the MQTT host username.')
+parser.add_argument('-p','--mqtt-pass', dest='password', action="store",
+                   help='Specify the MQTT host password.')
 parser.add_argument('-n', '--dry-run', dest='dryRun', action="store_true", default=False,
                    help='No data will be sent to the MQTT broker.')
 parser.add_argument('-t', '--topic', dest='topic', action="store", default="sensor/i2c",
@@ -91,8 +95,8 @@ jsonString = json.dumps(data)
 if status:
   debug("Success with message (for current readings) <{0}>".format(jsonString))
   if not args.dryRun:
-    publish.single(args.topic, jsonString, hostname=args.host)
+    publish.single(args.topic, jsonString, hostname=args.host, auth={'username':args.user, 'password':args.password})
 else:
   debug("Failure with message <{0}>".format(jsonString))
   if not args.dryRun:
-    publish.single(args.topicError, jsonString, hostname=args.host)
+    publish.single(args.topicError, jsonString, hostname=args.host, auth={'username':args.user, 'password':args.password})
